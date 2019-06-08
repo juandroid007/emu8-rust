@@ -1,5 +1,6 @@
 extern crate rand;
 extern crate sdl2;
+//extern crate hex;
 
 mod modules;
 pub mod machine;
@@ -18,26 +19,26 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     let mut loaded: bool = false;
+    let mut debug: bool = false;
 
     let mut machine = Machine::new();
 
     println!("Emu8 - A simple CHIP8 emulator.\nProgrammed by Juan Villacorta.\nVersion {}.", VERSION);
 
     if args.len() > 1 {
-        if args[1] == "-h" || args[1] == "--hexadecimal" {
-            if machine.load_rom(&args[2]) {
-                loaded = true;
+        for i in 1..args.len() {
+            if args[i] == "-d" || args[i] == "--debug" {
+                debug = true;
             }
-        }
-        else {
-            if machine.load_rom(&args[1]) {
-                loaded = true;
+            else if machine.load_rom(&args[i]) {
+                    loaded = true;
             }
         }
     }
     else {
-        println!("Usage: {} [-h] <ROM file>", args[0]);
-        println!("    -h | --hexadecimal: if set, will load rom as hex file.");
+        println!("Usage: {} <args> <ROM file>", args[0]);
+        println!("Arguments:");
+        println!("    -d | --debug: will load with debug output.");
     }
 
     if loaded {
@@ -54,7 +55,7 @@ fn main() {
                 break;
             }
 
-            let output = machine.tick(keypad);
+            let output = machine.tick(keypad, debug);
 
             if output.vram_changed {
                 screen.draw(output.vram);

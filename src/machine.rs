@@ -88,7 +88,7 @@ impl Machine {
     }
 
     pub fn load_rom(&mut self, filename: &str) -> bool {
-        let mut f = File::open(filename).expect("File not found");
+        let mut f = File::open(filename).expect(filename);
 
         let mut buffer = [0u8; ROMSIZE];
 
@@ -119,7 +119,7 @@ impl Machine {
         }
     }
 
-    pub fn tick(&mut self, input: [bool; 16]) -> Output {
+    pub fn tick(&mut self, input: [bool; 16], debug: bool) -> Output {
         self.input = input;
         self.vram_changed = false;
 
@@ -143,6 +143,17 @@ impl Machine {
             let opcode = self.get_opcode();
             self.increment_pc();
             self.run_opcode(opcode);
+
+            if debug {
+                println!("Opcode: {:X} | PC: {:#?} | SP: {:X} | I: {:X} | V0: {} | \
+                      V1: {} | V2: {} | V3: {} | V4: {} | V5: {} | \
+                      V6: {} | V7: {} | V8: {} | V9: {} | VA: {} | \
+                      VB: {} | VC: {} | VD: {} | VE: {} | VF: {}",
+                      opcode, self.pc, self.sp, self.i, self.v[0], self.v[1],
+                      self.v[2], self.v[3], self.v[4], self.v[5],  self.v[6], self.v[7],
+                      self.v[8], self.v[9], self.v[10], self.v[11], self.v[12],
+                      self.v[13], self.v[14], self.v[15]);
+            }
         }
 
         Output {
@@ -196,7 +207,9 @@ impl Machine {
             }
             // CALL nnn: stack[sp++] = pc, pc = nnn
             (0x02, _, _, _) => {
-                self.stack[self.sp] = self.pc + 2;
+                if self.sp < 16 {
+                    self.stack[self.sp] = self.pc;
+                }
                 self.sp += 1;
                 self.pc = nnn;
             }
@@ -336,7 +349,7 @@ impl Machine {
             (0x0F, _, 0x01, 0x05) => {
                 self.dt = self.v[x];
             }
-            // LD dt, v[x] -> dt = v[x]
+            // LD st, v[x] -> st = v[x]
             (0x0F, _, 0x01, 0x08) => {
                 self.st = self.v[x];
             }
