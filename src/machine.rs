@@ -373,7 +373,3 @@ impl Machine {
         }
     }
 }
-
-#[cfg(test)]
-#[path = "./processor_test.rs"]
-mod processor_test;
