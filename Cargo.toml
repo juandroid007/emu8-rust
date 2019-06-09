@@ -9,5 +9,3 @@ rand = "*"
 
 [dependencies.sdl2]
 version = "0.32"
-default-features = false
-features = ["gfx"]
