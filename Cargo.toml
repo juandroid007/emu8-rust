@@ -8,6 +8,6 @@ edition = "2018"
 rand = "*"
 
 [dependencies.sdl2]
-version = "*"
+version = "0.32"
 default-features = false
 features = ["gfx"]
