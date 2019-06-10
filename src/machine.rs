@@ -58,7 +58,6 @@ pub struct Machine {
 
 impl Machine {
     pub fn new() -> Self {
-
         let mut ram = [0u8; MEMSIZ];
 
         for i in 0..FONT_HEX.len() {
@@ -84,6 +83,14 @@ impl Machine {
             input: [false; 16],
             input_reg: 0,
             wait_input: false,
+        }
+    }
+
+    pub fn get_output(&self) -> Output {
+        Output {
+            vram: &self.vram,
+            vram_changed: self.vram_changed,
+            beep: self.st > 0,
         }
     }
 
@@ -119,7 +126,16 @@ impl Machine {
         }
     }
 
-    pub fn tick(&mut self, input: [bool; 16], debug: bool) -> Output {
+    pub fn tick_timers(&mut self) {
+            if self.dt > 0 {
+                self.dt -= 1
+            }
+            if self.st > 0 {
+                self.st -= 1
+            }
+    }
+
+    pub fn tick_cpu(&mut self, input: [bool; 16], debug: bool) {
         self.input = input;
         self.vram_changed = false;
 
@@ -132,13 +148,6 @@ impl Machine {
                 }
             }
         } else {
-            if self.dt > 0 {
-                self.dt -= 1
-            }
-            if self.st > 0 {
-                self.st -= 1
-            }
-
             // Read next opcode from memory and run.
             let opcode = self.get_opcode();
             self.increment_pc();
@@ -154,12 +163,6 @@ impl Machine {
                       self.v[8], self.v[9], self.v[10], self.v[11], self.v[12],
                       self.v[13], self.v[14], self.v[15]);
             }
-        }
-
-        Output {
-            vram: &self.vram,
-            vram_changed: self.vram_changed,
-            beep: self.st > 0,
         }
     }
 

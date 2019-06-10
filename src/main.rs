@@ -1,6 +1,5 @@
 extern crate rand;
 extern crate sdl2;
-//extern crate hex;
 
 mod modules;
 pub mod machine;
@@ -10,7 +9,7 @@ use modules::*;
 use machine::Machine;
 
 use std::thread;
-use std::time::Duration;
+use std::time::{ Instant, Duration };
 use std::env;
 
 const VERSION: &'static str = env!("CARGO_PKG_VERSION");
@@ -42,7 +41,9 @@ fn main() {
     }
 
     if loaded {
-        let sleep_duration = Duration::from_millis(2);
+        //let sleep_duration = Duration::from_millis(2);
+        let mut last_timers_update_time = Instant::now();
+        let mut last_cpu_update_time = Instant::now();
 
         let sdl_context = sdl2::init().unwrap();
 
@@ -55,19 +56,31 @@ fn main() {
                 break;
             }
 
-            let output = machine.tick(keypad, debug);
-
-            if output.vram_changed {
-                screen.draw(output.vram);
+            if Instant::now() - last_timers_update_time > Duration::from_millis(20) {
+                machine.tick_timers();
+                last_timers_update_time = Instant::now();
             }
 
-            if output.beep {
-                sound.start_beep();
-            } else {
-                sound.stop_beep();
+            if Instant::now() - last_cpu_update_time > Duration::from_millis(2) {
+                machine.tick_cpu(keypad, debug);
+                last_cpu_update_time = Instant::now();
             }
 
-            thread::sleep(sleep_duration);
+            {
+                let output = machine.get_output();
+
+                if output.vram_changed {
+                    screen.draw(output.vram);
+                }
+
+                if output.beep {
+                    sound.start_beep();
+                } else {
+                    sound.stop_beep();
+                }
+            }
+
+            thread::sleep(Duration::from_millis(2));
         }
     }
 }
