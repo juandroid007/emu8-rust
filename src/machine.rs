@@ -154,14 +154,16 @@ impl Machine {
             self.run_opcode(opcode);
 
             if debug {
-                println!("Opcode: {:X} | PC: {:#?} | SP: {:X} | I: {:X} | V0: {} | \
-                      V1: {} | V2: {} | V3: {} | V4: {} | V5: {} | \
-                      V6: {} | V7: {} | V8: {} | V9: {} | VA: {} | \
-                      VB: {} | VC: {} | VD: {} | VE: {} | VF: {}",
-                      opcode, self.pc, self.sp, self.i, self.v[0], self.v[1],
-                      self.v[2], self.v[3], self.v[4], self.v[5],  self.v[6], self.v[7],
-                      self.v[8], self.v[9], self.v[10], self.v[11], self.v[12],
-                      self.v[13], self.v[14], self.v[15]);
+                println!("Opcode: {:>width_4$X} | PC: {:>width_4$X} | SP: {:>width_4$X} | I: {:>width_4$X}\n\
+                --------------------------------------------\n\
+                V0: {:>width$} | V1: {:>width$} | V2: {:>width$} | V3: {:>width$}\n\
+                V4: {:>width$} | V5: {:>width$} | V6: {:>width$} | V7: {:>width$}\n\
+                V8: {:>width$} | V9: {:>width$} | VA: {:>width$} | VB: {:>width$}\n\
+                VC: {:>width$} | VD: {:>width$} | VE: {:>width$} | VF: {:>width$}\n",
+                opcode, self.pc, self.sp, self.i, self.v[0], self.v[1],
+                self.v[2], self.v[3], self.v[4], self.v[5],  self.v[6], self.v[7],
+                self.v[8], self.v[9], self.v[10], self.v[11], self.v[12],
+                self.v[13], self.v[14], self.v[15], width = 3, width_4 = 4);
             }
         }
     }

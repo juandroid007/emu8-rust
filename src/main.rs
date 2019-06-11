@@ -41,7 +41,7 @@ fn main() {
     }
 
     if loaded {
-        //let sleep_duration = Duration::from_millis(2);
+        let sleep_duration = Duration::from_millis(1);
         let mut last_timers_update_time = Instant::now();
         let mut last_cpu_update_time = Instant::now();
 
@@ -80,7 +80,7 @@ fn main() {
                 }
             }
 
-            thread::sleep(Duration::from_millis(2));
+            thread::sleep(sleep_duration);
         }
     }
 }
