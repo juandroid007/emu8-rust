@@ -22,7 +22,7 @@ fn main() {
 
     let mut machine = Machine::new();
 
-    println!("Emu8 - A simple CHIP8 emulator.\nProgrammed by Juan Villacorta.\nVersion {}.", VERSION);
+    println!("Emu8 - A simple CHIP8 emulator.\nProgrammed by Juan Villacorta.\nVersion {}.\n", VERSION);
 
     if args.len() > 1 {
         for i in 1..args.len() {
