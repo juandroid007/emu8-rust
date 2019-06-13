@@ -22,6 +22,8 @@ fn main() {
 
     let mut machine = Machine::new();
 
+    let mut rom_title = String::new();
+
     println!("Emu8 - A simple CHIP8 emulator.\nProgrammed by Juan Villacorta.\nVersion {}.\n", VERSION);
 
     if args.len() > 1 {
@@ -30,7 +32,8 @@ fn main() {
                 debug = true;
             }
             else if machine.load_rom(&args[i]) {
-                    loaded = true;
+                rom_title.push_str(&args[i]);
+                loaded = true;
             }
         }
     }
@@ -50,6 +53,8 @@ fn main() {
         let mut screen = Screen::new(&sdl_context);
         let mut events = Events::new(&sdl_context);
         let sound = Sound::new(&sdl_context);
+
+        screen.set_title(&rom_title);
 
         while let Ok(keypad) = events.poll() {
             if !events.should_run {

@@ -127,12 +127,12 @@ impl Machine {
     }
 
     pub fn tick_timers(&mut self) {
-            if self.dt > 0 {
-                self.dt -= 1
-            }
-            if self.st > 0 {
-                self.st -= 1
-            }
+        if self.dt > 0 {
+            self.dt -= 1
+        }
+        if self.st > 0 {
+            self.st -= 1
+        }
     }
 
     pub fn tick_cpu(&mut self, input: [bool; 16], debug: bool) {

@@ -50,6 +50,15 @@ impl Screen {
         }
         self.canvas.present();
     }
+
+    pub fn set_title(&mut self, title: &str) {
+        let window = self.canvas.window_mut();
+        let mut title_ = String::from("Emu 8 - ");
+
+        title_.push_str(title);
+
+        window.set_title(&title_).unwrap();
+    }
 }
 
 fn color(value: u8) -> pixels::Color {
